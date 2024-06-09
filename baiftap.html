@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Quan Ly Sinh Vien</title>
+	<style type="text/css">
+		.container {
+			width: 500px;
+			background-color: #35f0b4;
+			margin: 0px auto;
+			padding: 10px;
+		}
+
+		.form-group, label, input {
+			width: 100%;
+			font-size: 16px;
+		}
+
+		.form-group {
+			margin-bottom: 10px;
+		}
+	</style>
+</head>
+<body>
+<div class="container">
+	<h2>NHAP THONG TIN SINH VIEN</h2>
+	<form method="post" onsubmit="return saveData();">
+		<div class="form-group">
+			<label>Tai Khoan</label>
+			<input required type="text" id="username_id" placeholder="Nhap tai khoan">
+		</div>
+		<div class="form-group">
+			<label>Ho & Ten</label>
+			<input required type="text" id="fullname_id" placeholder="Nhap ho & ten">
+		</div>
+		<div class="form-group">
+			<label>Email</label>
+			<input required type="email" id="email_id" placeholder="Nhap email">
+		</div>
+		<div class="form-group">
+			<button type="submit">Luu Thong Tin</button>
+			<button type="reset">Xoa</button>
+			<button type="button" onclick="saveLocalStorage()">Luu Storage</button>
+			<button type="button" onclick="readLocalStorage()">Doc Storage</button>
+		</div>
+	</form>
+</div>
+<div class="container" style="margin-top: 20px">
+	<h2>DANH SACH SINH VIEN</h2>
+	<table border="1" cellpadding="5" style="width: 100%;">
+		<thead>
+			<tr>
+				<th>STT</th>
+				<th>Tai Khoan</th>
+				<th>Ho & Ten</th>
+				<th>Email</th>
+				<th></th>
+			</tr>
+		</thead>
+		<tbody id="result">
+		</tbody>
+	</table>
+</div>
+
+<script type="text/javascript">
+	// Tim hieu JSON trong JS
+	// JSON -> string -> cau trung json string -> giong nhu la object | array trong JS
+	// Neu object trong js
+	var std = {
+		"username": "dieptv",
+		"fullname": "Tran Van A",
+		"email": "a@gmail.com"
+	}
+
+	var stdJson = `{
+		"username": "dieptv",
+		"fullname": "Tran Van A",
+		"email": "a@gmail.com"
+	}`;
+
+	var arr = [1, 5, 2, 10]
+	var arrJson = '[1, 5, 2, 10]'
+
+	var stdList = [
+		{
+			"username": "dieptv",
+			"fullname": "Tran Van A",
+			"email": "a@gmail.com"
+		}, {
+			"username": "dieptv",
+			"fullname": "Tran Van A",
+			"email": "a@gmail.com"
+		}, {
+			"username": "dieptv",
+			"fullname": "Tran Van A",
+			"email": "a@gmail.com"
+		}
+	]
+
+	var stdListJson = `[
+		{
+			"username": "dieptv",
+			"fullname": "Tran Van A",
+			"email": "a@gmail.com"
+		}, {
+			"username": "dieptv",
+			"fullname": "Tran Van A",
+			"email": "a@gmail.com"
+		}, {
+			"username": "dieptv",
+			"fullname": "Tran Van A",
+			"email": "a@gmail.com"
+		}
+	]`
+	var stdListMinifyJson = '[{"username":"dieptv","fullname":"Tran Van A","email":"a@gmail.com"},{"username":"dieptv","fullname":"Tran Van A","email":"a@gmail.com"},{"username":"dieptv","fullname":"Tran Van A","email":"a@gmail.com"}]'
+
+	// Tai sao JSON duoc ung dung trong lap trinh nhieu
+	// Chuyen Object|Array trong js -> json string
+	var json = JSON.stringify(stdList)
+	console.log(json)
+
+	var arr = JSON.parse(stdListJson)
+	console.log(arr)
+// Bo nho localStorage: key -> value (key, value: int, float, boolean, char, string)
+	// Luu du lieu
+	// localStorage.setItem('test', 'Xin OKOKOKOK')
+	// localStorage.setItem('abc', 'Xin 0909 OKOKOKOK')
+
+	// Doc du lieu
+	// var v1 = localStorage.getItem('test')
+	// console.log(v1)
+	// var v1 = localStorage.getItem('key_ko_ton_tai')
+	// console.log(v1)
+
+	// Xoa du lieu
+	// localStorage.removeItem('test')
+	// localStorage.removeItem('abc')
+
+	function saveLocalStorage() {
+		var username = document.getElementById('username_id').value
+		var fullname = document.getElementById('fullname_id').value
+		var email = document.getElementById('email_id').value
+
+		localStorage.setItem('username', username)
+		localStorage.setItem('fullname', fullname)
+		localStorage.setItem('email', email)
+	}
+
+	function readLocalStorage() {
+		document.getElementById('username_id').value = localStorage.getItem('username')
+		document.getElementById('fullname_id').value = localStorage.getItem('fullname')
+		document.getElementById('email_id').value = localStorage.getItem('email')
+	}
+
+	// Chuong trinh quan ly sinh vien bang JS
+	var resultTag = document.getElementById('result')
+
+	var studentList = []
+
+	function saveData() {
+		var username = document.getElementById('username_id').value
+		var fullname = document.getElementById('fullname_id').value
+		var email = document.getElementById('email_id').value
+
+		var std = {
+			'username': username,
+			'fullname': fullname,
+			'email': email
+		}
+
+		if(cIndex >= 0) {
+			//sua thong tin
+			studentList[cIndex] = std
+			cIndex = -1 //Sau khi sua xong -> lan tiep theo la them moi
+		} else {
+			studentList.push(std)
+		}
+
+		showData()
+
+		return false
+	}
+
+	function showData() {
+		resultTag.innerHTML = ''
+
+		var index = 0
+		for(std of studentList) {
+			resultTag.innerHTML += `<tr>
+				<td>${index + 1}</td>
+				<td>${std.username}</td>
+				<td>${std.fullname}</td>
+				<td>${std.email}</td>
+				<td>
+					<button onclick="editStudent(${index})">Sua</button>
+					<button onclick="removeStudent(${index})">Xoa</button>
+				</td>
+			</tr>`
+			index++
+		}
+	}
+
+	var cIndex = -1
+	function editStudent(index) {
+		cIndex = index
+
+		document.getElementById('username_id').value = studentList[index].username
+		document.getElementById('fullname_id').value = studentList[index].fullname
+		document.getElementById('email_id').value = studentList[index].email
+	}
+
+	function removeStudent(index) {
+		var option = confirm('Ban chac chan muon xoa sinh vien nay khong?')
+		if(!option) return
+
+		studentList.splice(index, 1)
+
+		showData()
+	}
+</script>
+</body>
+</html>
